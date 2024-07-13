@@ -1,0 +1,47 @@
+# Enable URL rewriting
+RewriteEngine On
+
+# Redirect all requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?/$1 [L]
+
+# Set the default index file
+DirectoryIndex index.php
+DocumentRoot /var/www/html
+# Prevent directory listing
+Options -Indexes
+
+# Set PHP settings
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+    php_value max_execution_time 30
+    php_value max_input_time 60
+</IfModule>
+
+# Handle cross-origin resource sharing (CORS)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
+# Security settings
+<IfModule mod_headers.c>
+    Header always append X-Frame-Options SAMEORIGIN
+    Header set X-Content-Type-Options nosniff
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Deny access to .htaccess itself
+<Files ".htaccess">
+    Require all denied
+</Files>
+
+<FilesMatch \.php$>
+    SetHandler application/x-httpd-php
+</FilesMatch>
+<Directory /var/www/html>
+    AllowOverride All
+</Directory>

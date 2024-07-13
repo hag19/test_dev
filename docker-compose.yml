@@ -1,0 +1,35 @@
+version: '3'
+services:
+  apache:
+    build: ./documentation
+    container_name: apache2-php
+    volumes:
+      - ./documentation/.htaccess:/usr/local/apache2/htdocs/.htaccess
+      - ./html:/usr/local/apache2/htdocs/
+      - ./html:/var/www/html
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_NAME: empreinte
+      DATABASE_USER: root
+      DATABASE_PASSWORD: "root"
+    ports:
+      - "8090:80"
+    depends_on:
+      - mysql
+    restart: unless-stopped
+  mysql:
+    image: mysql:latest
+    container_name: mysql-db
+    environment:
+      MYSQL_DATABASE: empreinte
+      MYSQL_ROOT_PASSWORD: "root"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    restart: unless-stopped
+
+  go-api:
+    build: ./go-api
+    container_name: go-api-app
+    ports:
+      - "8091:8090"
+    restart: unless-stopped
