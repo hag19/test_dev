@@ -20,13 +20,7 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
 }else{
 switch ($requestMethod) {
     case 'DELETE':
-        // Check if user is authenticated
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-            http_response_code(403); // Forbidden
-            echo json_encode(["message" => "Unauthorized access"]);
-            exit;
-        }
-
+      
         // Read the input stream for JSON data
         $input = file_get_contents('php://input');
         // Decode JSON data
@@ -50,13 +44,7 @@ switch ($requestMethod) {
         break;
 
     case 'POST':
-        // Check if user is authenticated
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-            // Redirect or handle unauthorized access
-         $auth->verif_u(htmlspecialchars($_POST['email']),hash('sha256', htmlspecialchars($_POST['password'])));
-        header('location: index.php');
-        exit;
-        }
+     
 
         $name = htmlspecialchars($_POST['name']);
         $email = htmlspecialchars($_POST['email']);
@@ -73,12 +61,6 @@ switch ($requestMethod) {
         break;
 
     case 'PUT':
-        // Check if user is authenticated
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-            http_response_code(403); // Forbidden
-            echo json_encode(["message" => "Unauthorized access"]);
-            exit;
-        }
 
         // Read the input stream for JSON data
         $input = file_get_contents('php://input');
@@ -104,22 +86,9 @@ switch ($requestMethod) {
     case 'GET':
         if (isset($_GET['action'])) {
             if ($_GET['action'] == 'getlist') {
-                // Check if user is authenticated
-                if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-                    http_response_code(403); // Forbidden
-                    echo json_encode(["message" => "Unauthorized access"]);
-                    exit;
-                }
 
                 $user->getlist();
             } elseif ($_GET['action'] == 'getuser') {
-                // Check if user is authenticated
-                if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-                    http_response_code(403); // Forbidden
-                    echo json_encode(["message" => "Unauthorized access"]);
-                    exit;
-                }
-
                 if (isset($_GET['id'])) {
                     $id = $_GET['id'];
                     $data = $user->getinfo($id);
